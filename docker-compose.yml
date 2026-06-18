@@ -1,15 +1,16 @@
-version: '3.8'
-
 services:
-  web:
-    image: node:20-alpine
-    container_name: ciex-dashboard
-    working_dir: /app
-    volumes:
-      - .:/app
-      - /app/node_modules
-    ports:
-      - "3000:3000"
-    command: sh -c "npm install && npm run dev"
-    environment:
-      - NODE_ENV=development
+  dashboard:
+    build: .
+    restart: unless-stopped
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dashboard-inundacoes.rule=Host(`${DASHBOARD_HOST:-inundacoes}.${DOMAIN:-ciex.local}`) || HostRegexp(`^inundacoes\\..+\\.sslip\\.io$$`)"
+      - "traefik.http.routers.dashboard-inundacoes.tls=true"
+      - "traefik.http.routers.dashboard-inundacoes.middlewares=security-headers@file,compress@file"
+      - "traefik.http.services.dashboard-inundacoes.loadbalancer.server.port=3000"
+
+networks:
+  proxy:
+    external: true
