@@ -1,6 +1,10 @@
 services:
   dashboard:
-    build: .
+    build:
+      context: .
+      args:
+        # Ex.: NEXT_PUBLIC_CENARIOS_HIPOTETICOS=1 make local-build
+        NEXT_PUBLIC_CENARIOS_HIPOTETICOS: ${NEXT_PUBLIC_CENARIOS_HIPOTETICOS:-}
     restart: unless-stopped
     ports:
       - "${PORT:-3000}:3000"

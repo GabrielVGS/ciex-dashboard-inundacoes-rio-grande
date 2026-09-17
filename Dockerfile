@@ -13,6 +13,12 @@ COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NEXT_OUTPUT=standalone
 
+# Flags NEXT_PUBLIC_* são inlinadas por `next build` no bundle do cliente, não
+# lidas em runtime — por isso precisam chegar como build arg, e mudá-las exige
+# rebuild (não basta restart). Ver lib/cenarios.ts.
+ARG NEXT_PUBLIC_CENARIOS_HIPOTETICOS
+ENV NEXT_PUBLIC_CENARIOS_HIPOTETICOS=$NEXT_PUBLIC_CENARIOS_HIPOTETICOS
+
 RUN npm run build
 
 FROM base AS runner

@@ -1,6 +1,10 @@
 services:
   dashboard:
-    build: .
+    build:
+      context: .
+      args:
+        # Vazio por padrão: cenários hipotéticos ficam ocultos em produção.
+        NEXT_PUBLIC_CENARIOS_HIPOTETICOS: ${NEXT_PUBLIC_CENARIOS_HIPOTETICOS:-}
     restart: unless-stopped
     networks:
       - proxy
