@@ -120,12 +120,25 @@ const HEADER_GLASS = {
 } as const;
 
 // Ordem cronológica do evento (Setembro 2023 é anterior a Maio 2024).
-const CENARIOS = [
+const TODOS_CENARIOS = [
   "Cenário Setembro 2023",
   "Cenário Maio 2024",
   "Cenário Maio 2024 + 50%",
   "Nível da Lagoa + Chuva Acumulada – 16/05/2024",
 ];
+
+// Cenários hipotéticos que ficam fora do build de produção (ainda em validação),
+// mas continuam disponíveis em desenvolvimento. Para exibi-los num build de
+// produção — p. ex. numa homologação — defina NEXT_PUBLIC_CENARIOS_HIPOTETICOS=1.
+const CENARIOS_HIPOTETICOS = ["Cenário Maio 2024 + 50%"];
+const MOSTRAR_HIPOTETICOS =
+  process.env.NODE_ENV !== "production" ||
+  process.env.NEXT_PUBLIC_CENARIOS_HIPOTETICOS === "1";
+
+// Lista efetivamente exposta na UI e nos permalinks.
+const CENARIOS = MOSTRAR_HIPOTETICOS
+  ? TODOS_CENARIOS
+  : TODOS_CENARIOS.filter(c => !CENARIOS_HIPOTETICOS.includes(c));
 // Cenário inicial ao carregar sem permalink — independente da posição no
 // array acima, para a ordem de exibição não mudar o comportamento padrão.
 const DEFAULT_CENARIO = "Cenário Maio 2024";
