@@ -31,6 +31,10 @@ const CEN_COLORS: Record<string, string> = {
   "Nível da Lagoa + Chuva Acumulada – 16/05/2024":  "#7c3aed",
 };
 const CEN_FALLBACK = "#3d7a94";
+// Cenário ao qual os números fixos da Seção 7 (CNAE 84) se referem. Esses valores
+// vêm da análise original e não são deriváveis do JSON, então o bloco só aparece
+// quando o cenário em questão está visível — ver lib/cenarios.ts.
+const CENARIO_CNAE84 = "Cenário Maio 2024 + 50%";
 const COMP_COLORS = {
   empresas:    "#2563eb",
   educacao:    "#16a34a",
@@ -337,12 +341,14 @@ export function PerdasClient({ dados }: { dados: PerdasData }) {
             são <strong>incluídos</strong> na estimativa — a interrupção de serviços governamentais
             representa perdas reais para a sociedade, conforme a metodologia DaLA (CEPAL, 2024).
           </p>
-          <DataTable rows={[
-            ["Indicador (Rio Grande / Maio 2024 + 50%)", "Valor"],
-            ["Estabelecimentos CNAE 84",       "5"],
-            ["Participação na massa salarial", "24,0%  (R$ 26,2 mi/mês)"],
-            ["Contribuição ao total (60 dias)","≈ R$ 58,5 mi de R$ 460,0 mi"],
-          ]} />
+          {CENARIO_CNAE84 in cenariosOriginais && (
+            <DataTable rows={[
+              [`Indicador (Rio Grande / ${CENARIO_CNAE84.replace("Cenário ", "")})`, "Valor"],
+              ["Estabelecimentos CNAE 84",       "5"],
+              ["Participação na massa salarial", "24,0%  (R$ 26,2 mi/mês)"],
+              ["Contribuição ao total (60 dias)","≈ R$ 58,5 mi de R$ 460,0 mi"],
+            ]} />
+          )}
           <Note type="warning">
             O labor share de Adm. Pública (88,3%) é elevado, pois o VAB deste setor é
             predominantemente composto por remunerações. Leitores que desejam excluir o setor
@@ -584,4 +590,3 @@ function DiasBadge({ dias }: { dias: number }) {
     </div>
   );
 }
-
